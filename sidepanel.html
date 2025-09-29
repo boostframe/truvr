@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="dist/styles.css" rel="stylesheet"/>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    
+    <title>Truvr</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.204); /* Transparent background */
+            /* Applies the blur effect */
+        }
+
+        #colorButton {
+          padding: 10px 20px;
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+          color: white;
+      }
+
+      .navbar {
+        position: -webkit-sticky; /* For Safari */
+        position: sticky;
+        top: 0;
+        z-index: 1000; /* Ensure it stays above other content */
+    }
+
+    
+     /* Custom progress bar style */
+    .progress {
+      /* HTML: <div class="loader"></div> */
+      width: 40px;
+      aspect-ratio: 1;
+      --c: linear-gradient(#fdf8f8 0 0);
+      --r1: radial-gradient(farthest-side at bottom,#fdf8f8 93%,#fdf8f8);
+      --r2: radial-gradient(farthest-side at top   ,#fdf8f8 93%,#fdf8f8);
+      background: 
+        var(--c) ,var(--r1),var(--r2),
+        var(--c) ,var(--r1),var(--r2),
+        var(--c) ,var(--r1),var(--r2);
+      background-repeat: no-repeat;
+      animation: l2 1s infinite alternate;
+    }
+
+    .progress::before {
+      /* HTML: <div class="loader"></div> */
+      width: 40px;
+      aspect-ratio: 1;
+      --c: linear-gradient(#fdf8f8 0 0);
+      --r1: radial-gradient(farthest-side at bottom,#fdf8f8 93%,#fdf8f8);
+      --r2: radial-gradient(farthest-side at top   ,#fdf8f8 93%,#fdf8f8);
+      background: 
+        var(--c) ,var(--r1),var(--r2),
+        var(--c) ,var(--r1),var(--r2),
+        var(--c) ,var(--r1),var(--r2);
+      background-repeat: no-repeat;
+      animation: l2 1s infinite alternate;
+    }
+
+    /* Keyframe animation for moving the color from left to right and back */
+    @keyframes moveProgress {
+      0% {
+        left: 0;
+      }
+      50% {
+        left: 100%; /* Move to the far right */
+      }
+      100% {
+        left: 0; /* Move back to the starting point */
+      }
+    }
+    
+    .prose {
+      max-height: 150px;  /* Set initial height */
+      overflow: hidden;   /* Hide overflow */
+      transition: max-height 0.5s ease;  /* Smooth transition */
+    }
+
+    .prose.expanded {
+      max-height: 1000px;  /* Large height to show full content when expanded */
+    }
+
+    .prose2 {
+      max-height: 150px;  /* Set initial height */
+      overflow: hidden;   /* Hide overflow */
+      transition: max-height 0.5s ease;  /* Smooth transition */
+    }
+
+    .prose2.expanded {
+      max-height: 1000px;  /* Large height to show full content when expanded */
+    }
+
+    .show-more-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    /* HTML: <div class="loader"></div> */
+.circle-loader {
+  /* HTML: <div class="loader"></div> */
+  width: 40px;
+  aspect-ratio: 1;
+  --c: linear-gradient(#fdf8f8 0 0);
+  --r1: radial-gradient(farthest-side at bottom,#fdf8f8 93%,#fdf8f8);
+  --r2: radial-gradient(farthest-side at top   ,#fdf8f8 93%,#fdf8f8);
+  background: 
+    var(--c) ,var(--r1),var(--r2),
+    var(--c) ,var(--r1),var(--r2),
+    var(--c) ,var(--r1),var(--r2);
+  background-repeat: no-repeat;
+  animation: l2 1s infinite alternate;
+}
+@keyframes l2 {
+  0%,25% {
+    background-size: 8px 0,8px 4px,8px 4px,8px 0,8px 4px,8px 4px,8px 0,8px 4px,8px 4px;
+    background-position: 0 50%,0 calc(50% - 2px),0 calc(50% + 2px),50% 50%,50% calc(50% - 2px),50% calc(50% + 2px),100% 50%,100% calc(50% - 2px),100% calc(50% + 2px);
+ }
+ 50% {
+    background-size: 8px 100%,8px 4px,8px 4px,8px 0,8px 4px,8px 4px,8px 0,8px 4px,8px 4px;
+    background-position: 0 50%,0 calc(0% - 2px),0 calc(100% + 2px),50% 50%,50% calc(50% - 2px),50% calc(50% + 2px),100% 50%,100% calc(50% - 2px),100% calc(50% + 2px);
+ }
+ 75% {
+    background-size: 8px 100%,8px 4px,8px 4px,8px 100%,8px 4px,8px 4px,8px 0,8px 4px,8px 4px;
+    background-position: 0 50%,0 calc(0% - 2px),0 calc(100% + 2px),50% 50%,50% calc(0% - 2px),50% calc(100% + 2px),100% 50%,100% calc(50% - 2px),100% calc(50% + 2px);
+ }
+ 95%,100% {
+    background-size: 8px 100%,8px 4px, 8px 4px,8px 100%,8px 4px,8px 4px,8px 100%,8px 4px,8px 4px;
+    background-position: 0 50%,0 calc(0% - 2px),0 calc(100% + 2px),50% 50%,50% calc(0% - 2px),50% calc(100% + 2px),100% 50%,100% calc(0% - 2px),100% calc(100% + 2px);
+ }
+}
+
+.circle-static {
+  /* HTML: <div class="loader"></div> */
+  width: 40px;
+  aspect-ratio: 1;
+  --c: linear-gradient(#fdf8f8 0 0);
+  --r1: radial-gradient(farthest-side at bottom,#fdf8f8 93%,#fdf8f8);
+  --r2: radial-gradient(farthest-side at top   ,#fdf8f8 93%,#fdf8f8);
+  background: 
+    var(--c) ,var(--r1),var(--r2),
+    var(--c) ,var(--r1),var(--r2),
+    var(--c) ,var(--r1),var(--r2);
+  background-repeat: no-repeat;
+  animation: l3 9999999999s infinite alternate;
+}
+@keyframes l3 {
+  0%,25% {
+    background-size: 8px 0,8px 4px,8px 4px,8px 0,8px 4px,8px 4px,8px 0,8px 4px,8px 4px;
+    background-position: 0 50%,0 calc(50% - 2px),0 calc(50% + 2px),50% 50%,50% calc(50% - 2px),50% calc(50% + 2px),100% 50%,100% calc(50% - 2px),100% calc(50% + 2px);
+ }
+}
+
+
+    </style>
+</head>
+<body>
+        
+  <div class="navbar bg-base-100 justify">
+    <div class="flex-1">
+      <a class="btn btn-ghost text-xl">TRUVR</a>
+    </div>
+    <div class="flex-none gap-2">
+      <div class="">
+        <ul class="menu menu-horizontal lg:menu-horizontal bg-base-200 rounded-box">
+          <li><a>Native</a></li>
+          <li><a>AI</a></li>
+          <li><a>Settings</a></li>
+        </ul>
+      </div>
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+          <div class="w-10 rounded-full">
+            <img
+              alt="Tailwind CSS Navbar component"
+              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+          </div>
+        </div>
+        <ul
+          tabindex="0"
+          class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+          <li>
+            <a class="justify-between">
+              Profile
+              <span class="badge">New</span>
+            </a>
+          </li>
+          <li><a id="switchThemeButton">Switch Theme</a></li>
+          <li><a>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+    <div id="scrollspy-scrollable-parent-1" class="max-h-[340px] overflow-y-auto">
+      <header class="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-100 w-auto bg-blue-500 text-sm py-4 dark:bg-blue-500">
+        
+      </header>
+<div class="flex flex-col" id="main-loading-card" >
+      <div class="md:container md:mx-auto">
+        <div><br></div>
+        <hr class="border-4">
+        <hr class="border-4">
+        <hr class="border-4">
+        <hr class="border-4">
+        <hr class="border-4">
+      </div>
+      <div class="md:container md:mx-auto">
+        <!-- Timeline -->
+        <div><br></div>
+
+        <div class="grow pb-8 group-last:pb-0">
+
+          <div id="main-card-04">
+            <div class="card bg-neutral text-neutral-content w-96" style="height: 644px;">
+              <div class="card-body items-center text-center">
+                <h2 class="card-title">Welcome to Truvr!</h2>
+                <br>
+                <p id="main-status">Please open an Amazon Product Page to proceed</p>
+                <div class="circle-static" id="circle-static"></div>
+                <div class="circle-loader" id="circle-loader" hidden></div>
+                <div class="card-actions">
+                  <p></p>
+                  
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+  </div>
+</div>
+</div>
+
+<div class="flex flex-col" id="main-card-01" hidden>
+
+  <div class="md:container md:mx-auto">
+    <div><br></div>
+    <hr class="border-4">
+    <hr class="border-4">
+    <hr class="border-4">
+    <hr class="border-4">
+    <hr class="border-4">
+  </div>
+
+      <div class="md:container md:mx-auto">
+      <!-- Timeline -->
+      <div><br></div>
+    <!-- Item -->
+    
+      <div class="grow pb-8 group-last:pb-0">
+        <!-- xs -->
+        <div class="card bg-neutral text-neutral-content w-96">
+          <div class="card-body items-center text-left" >
+            <h2 class="card-title">Product Information</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" id="download-icon3"
+        style="position: absolute; top: 10px; right: 10px; cursor: pointer; width: 24px; height: 24px;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+            <p class="font-semibold text-sm text-gray-800 dark:text-neutral-900">
+              
+            </p>
+            <div id="productbox" class="grid grid-cols-2 gap-4 text-left prose expanded"></div>
+              <button class="btn btn-primary btn-xs" id="toggleButton">Show More</button>
+              <progress class="progress w-36" id="progressBar2" hidden></progress>
+            
+          </div>
+        </div>  
+        <br>
+        
+        <br>
+      <!-- md -->
+
+
+      <div class="card bg-neutral text-neutral-content w-96">
+        <div class="card-body items-center text-center">
+          <h2 class="card-title">Product Specsheet</h2>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" id="download-icon2"
+        style="position: absolute; top: 10px; right: 10px; cursor: pointer; width: 24px; height: 24px;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+          <p class="font-semibold text-sm text-gray-800 dark:text-neutral-900">
+            
+            <span class="loading loading-ring loading-lg"></span>
+          
+          </p>
+          <div id="specs" class="text-wrap text-left prose2">
+            <table class="table-auto table-zebra table-xs" id="table-specs">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Specification</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody id="specs-tbody">
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-primary btn-xs" id="toggleButton2">Show More</button>
+          <progress class="progress w-36" id="progressBar" hidden></progress>
+          
+        </div>
+      </div>  
+      <br>
+
+
+      
+      </div>
+      <!-- End Right Content -->
+    </div>
+    <!-- End Item -->
+  </div>
+  <!-- End Timeline -->
+</div>
+<br>
+<div id="main-card-02" hidden>
+  <div class="card bg-neutral text-neutral-content w-56">
+    <div class="card-body items-center text-center">
+      <h2 class="card-title">Pros & Cons</h2>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" id="download-icon"
+        style="position: absolute; top: 10px; right: 10px; cursor: pointer; width: 24px; height: 24px;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+      <p class="font-semibold text-sm text-gray-800 dark:text-neutral-900">
+        
+        <span class="loading loading-ring loading-lg"></span>
+      
+      </p>
+    <div id="proscons" class="text-wrap text-left">
+      <table class="table-auto table-zebra" id="table-pc">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th></th>
+            <th>Pros</th>
+            <th>Cons</th>
+          </tr>
+        </thead>
+        <tbody id="pros-cons-table">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<br>
+
+<div class="md:container md:mx-auto" hidden>
+    
+  <button id="getHtml" type="button"  class="btn btn-neutral">
+    GetHTML
+  </button>
+  <button id="darkModeButton" type="button" class="btn btn-neutral">
+    dark
+  </button>
+  <button type="button" id="button4"  class="btn btn-neutral">
+    async
+  </button>
+  <button id="button5"  class="btn btn-neutral">Click Me!</button>
+  
+</div>
+
+
+    
+    
+
+</div>
+</div>
+
+
+<br>
+
+<div id="main-card-03" hidden>
+  <div class="card bg-neutral text-neutral-content w-96">
+    <div class="card-body items-center text-center" >
+      <h2 class="card-title">Product Media</h2>
+      <p><progress class="progress w-36" id="progressBar3" hidden></progress></p>
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary">Images</button>
+        <button class="btn btn-ghost" disabled="disabled">Videos</button>
+        <div class="carousel w-full" id="carousel-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+
+<div id="main-card-06" hidden>
+  <div class="card bg-neutral text-neutral-content w-96">
+    <div class="card-body items-center text-center">
+      <h2 class="card-title">Truvr Appruvl Rating</h2>
+      <p><div class="rating rating-md">
+        <input type="radio" name="rating-7" class="mask mask-star-2 bg-orange-400" />
+        <input
+          type="radio"
+          name="rating-7"
+          class="mask mask-star-2 bg-orange-400"
+          checked="checked" />
+        <input type="radio" name="rating-7" class="mask mask-star-2 bg-orange-400" />
+        <input type="radio" name="rating-7" class="mask mask-star-2 bg-orange-400" />
+        <input type="radio" name="rating-7" class="mask mask-star-2 bg-orange-400" />
+      </div></p>
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary" >92% Positive</button>
+        <button class="btn btn-ghost" >8% Negative</button>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="card bg-neutral text-neutral-content w-96">
+  <div class="card-body items-center text-center">
+    <p> Truvr Connection Status </p>
+    <p id="data"></p>
+    <hr class="border-4">
+    <p id="task-data"></p>
+  </div>
+</div>
+</div>
+</div>
+<script src="sidepanel.js"></script>
+<script src="preline.js"></script>
+</body>
+</html>
