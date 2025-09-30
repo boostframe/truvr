@@ -1,16 +1,31 @@
+// API configuration
+const API_BASE = 'http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000';
+const api = (path) => `${API_BASE}${path}`;
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return response;
+  } finally {
+    clearTimeout(id);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-  // Fetch data from the server
-  fetch('http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000/')
-      .then(response => response.json())
-      .then(data => {
-          document.getElementById('data').innerText = data.message;
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-          document.getElementById('data').innerText = 'Failed to fetch data';
-      });
-      
+  // Connection check to backend
+  fetchWithTimeout(api('/'))
+    .then(async (response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      document.getElementById('data').innerText = data.message || 'Connected';
+    })
+    .catch((error) => {
+      console.error('Error fetching connection status:', error);
+      document.getElementById('data').innerText = 'Failed to fetch data (backend unreachable)';
     });
+});
     
     getThemeLocal().then(theme => {
       console.log(theme.theme);
@@ -54,7 +69,7 @@ async function getHtmlContent(message) {
       console.log("price:", price);
 
       // Send the cleaned HTML to the backend
-      const response = await fetch('http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000/upload-html', {
+      const response = await fetchWithTimeout(api('/upload-html'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +106,7 @@ async function getHtmlContent(message) {
       // Poll the status of the task every few seconds
       const intervalId = setInterval(async () => {
         try {
-          const statusResponse = await fetch(`http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000/task-status/${task_id}`);
+          const statusResponse = await fetchWithTimeout(api(`/task-status/${task_id}`));
           
           if (!statusResponse.ok) {
             document.getElementById('task-data').innerText = 'Failed to receive data from backend server';
@@ -377,7 +392,7 @@ document.getElementById("button4").addEventListener("click", () => {
     try {
       console.log("Async request sent");
 
-      const response = await fetch('http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000/start-task/', {
+      const response = await fetchWithTimeout(api('/start-task/'), {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -394,7 +409,7 @@ document.getElementById("button4").addEventListener("click", () => {
       // Poll the status of the task every few seconds
       const intervalId = setInterval(async () => {
         try {
-          const statusResponse = await fetch(`http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000/task-status/${task_id}`);
+          const statusResponse = await fetchWithTimeout(api(`/task-status/${task_id}`));
           
           if (!statusResponse.ok) {
             document.getElementById('task-data').innerText = 'Failed to recieve data from backend-server';
