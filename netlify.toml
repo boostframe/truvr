@@ -1,0 +1,9 @@
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm run dev --silent || echo dev"
+  port = 8888
+  targetPort = 8888
+  publish = "."

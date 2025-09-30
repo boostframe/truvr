@@ -1,5 +1,7 @@
 // API configuration
-const API_BASE = 'http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com:8000';
+// Netlify Functions local dev default. For production, set your site URL, e.g.:
+// const API_BASE = 'https://<your-site>.netlify.app/.netlify/functions';
+const API_BASE = 'http://localhost:8888/.netlify/functions';
 const api = (path) => `${API_BASE}${path}`;
 
 async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
@@ -13,18 +15,29 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
   }
 }
 
+async function checkConnection() {
+  const el = document.getElementById('data');
+  if (!el) return;
+  el.innerText = 'Checking...';
+  try {
+    const response = await fetchWithTimeout(api('/health'));
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    el.innerText = data.message || 'Connected';
+  } catch (error) {
+    const isAbort = error && (error.name === 'AbortError');
+    const msg = isAbort ? 'Timed out' : (error?.message || 'Network error');
+    console.error('Error fetching connection status:', error);
+    el.innerText = `Failed to fetch data (${msg})`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-  // Connection check to backend
-  fetchWithTimeout(api('/'))
-    .then(async (response) => {
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      document.getElementById('data').innerText = data.message || 'Connected';
-    })
-    .catch((error) => {
-      console.error('Error fetching connection status:', error);
-      document.getElementById('data').innerText = 'Failed to fetch data (backend unreachable)';
-    });
+  // Initial connection check
+  checkConnection();
+  // Retry button if present
+  const btn = document.getElementById('retry-conn');
+  if (btn) btn.addEventListener('click', checkConnection);
 });
     
     getThemeLocal().then(theme => {
@@ -69,7 +82,7 @@ async function getHtmlContent(message) {
       console.log("price:", price);
 
       // Send the cleaned HTML to the backend
-      const response = await fetchWithTimeout(api('/upload-html'), {
+      const response = await fetchWithTimeout(api('/process-html'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,8 +94,8 @@ async function getHtmlContent(message) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const { task_id } = await response.json();
-      console.log("Task started with ID:", task_id);
+      const directResult = await response.json();
+      console.log("Processing completed:", directResult);
       // progressbad toggle
       //clearHtml();
       //toggleAllCards();
@@ -103,42 +116,18 @@ async function getHtmlContent(message) {
       clearCarousel();
       }
       //showProgressBar();
-      // Poll the status of the task every few seconds
-      const intervalId = setInterval(async () => {
-        try {
-          const statusResponse = await fetchWithTimeout(api(`/task-status/${task_id}`));
-          
-          if (!statusResponse.ok) {
-            document.getElementById('task-data').innerText = 'Failed to receive data from backend server';
-            throw new Error(`HTTP error! status: ${statusResponse.status}`);
-          }
-
-          const statusResult = await statusResponse.json();
-
-          if (statusResult.status === 'completed') {
-            clearInterval(intervalId);
-            document.getElementById('task-data').innerText = 'Task Complete';
-            console.log('Task completed with result:', statusResult.result);
-            //showProgressBar();
-            //showAdditional();
-            setStateLocal("2");
-            showMainLoading();
-            toggleMain();
-            toggleAllCards();
-            updateJsonAndModifyHtml(statusResult);
-            populateTables(statusResult);
-            populateProductCard(statusResult);
-            createCarousel(statusResult);
-          } else {
-            document.getElementById('task-data').innerText = 'Processing...';
-            console.log('Task is still processing...');
-            
-          }
-        } catch (error) {
-          document.getElementById('task-data').innerText = "Error checking task status";
-          console.error("Error checking task status:", error);
-        }
-      }, 2000);
+      const statusResult = directResult.status ? directResult : { status: 'completed', result: directResult };
+      if (statusResult.status === 'completed') {
+        document.getElementById('task-data').innerText = 'Task Complete';
+        setStateLocal("2");
+        showMainLoading();
+        toggleMain();
+        toggleAllCards();
+        updateJsonAndModifyHtml(statusResult);
+        populateTables(statusResult);
+        populateProductCard(statusResult);
+        createCarousel(statusResult);
+      }
     }
   } catch (error) {
     console.error("Error during execution:", error);

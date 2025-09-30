@@ -1,8 +1,10 @@
 {
   "dependencies": {
-    "preline": "^2.4.1"
+    "preline": "^2.4.1",
+    "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.7"
+    "@tailwindcss/forms": "^0.5.7",
+    "netlify-cli": "^17.34.1"
   }
 }

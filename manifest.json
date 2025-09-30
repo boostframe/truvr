@@ -22,7 +22,10 @@
     "host_permissions":  [
                              "*://*.amazon.com/*",
                              "*://*.walmart.com/*",
-                             "http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com/*"
+                             "http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com/*",
+                             "http://localhost:8000/*",
+                             "http://localhost:8888/*",
+                             "https://*.netlify.app/*"
                          ],
     "web_accessible_resources":  [
                                      {
