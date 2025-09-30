@@ -1,36 +1,39 @@
-{
-    "manifest_version": 3,
-    "name": "Truvr",
-    "version": "1.0",
-    "permissions": ["scripting","sidePanel","activeTab",
-    "storage",
-    "tabs",
-    "background", "userScripts", "webNavigation"],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "action": {
-    "default_title": "Click to open Truvr Panel"
-  },
-    "side_panel": {
-      "default_path": "sidepanel.html"
-    },"host_permissions": [
-    "*://*.amazon.com/*",
-    "*://*.walmart.com/*",
-    "https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css"
-  ],
-    "web_accessible_resources": [
-    {
-        "resources": [
-            "dist/styles.css",
-            "node_modules/preline/dist/preline.js",
-            "sidepanel.js",
-            "preline.js",
-            "https://cdn.tailwindcss.com",
-            "https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css"
-        ],
-        "matches": ["<all_urls>"]
-    }
-]
+﻿{
+    "manifest_version":  3,
+    "name":  "Truvr",
+    "version":  "1.0",
+    "permissions":  [
+                        "scripting",
+                        "sidePanel",
+                        "activeTab",
+                        "storage",
+                        "tabs",
+                        "webNavigation"
+                    ],
+    "background":  {
+                       "service_worker":  "background.js"
+                   },
+    "action":  {
+                   "default_title":  "Click to open Truvr Panel"
+               },
+    "side_panel":  {
+                       "default_path":  "sidepanel.html"
+                   },
+    "host_permissions":  [
+                             "*://*.amazon.com/*",
+                             "*://*.walmart.com/*",
+                             "http://ec2-18-194-45-243.eu-central-1.compute.amazonaws.com/*"
+                         ],
+    "web_accessible_resources":  [
+                                     {
+                                         "matches":  [
+                                                         "\u003call_urls\u003e"
+                                                     ],
+                                         "resources":  [
+                                                           "dist/styles.css",
+                                                           "preline.js",
+                                                           "sidepanel.js"
+                                                       ]
+                                     }
+                                 ]
 }
-  

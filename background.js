@@ -65,14 +65,6 @@ function sendMessageToContentScript(message) {
 //});
 //chrome.webNavigation.onHistoryStateUpdated.addListener
 
-function sleep(ms) {
-  const end = Date.now() + ms;
-  while (Date.now() < end) {
-    // Busy wait loop
-  }
-}
-
-
 chrome.webNavigation.onCompleted.addListener(function(details) {
   if(details.frameId === 0) {
       // Fires only when details.url === currentTab.url
@@ -85,6 +77,5 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
             ]);
           }
       });
-      sleep(5000);
   }
 });

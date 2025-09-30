@@ -150,11 +150,9 @@ function setThemeLocal(value){
   chrome.storage.local.set(data);
 }
 
-function getThemeLocal(){
-  let result = '';
-  let key = 'theme'
-  result = chrome.storage.local.get([key]);
-  return result || 'light' ;
+async function getThemeLocal(){
+  const { theme } = await chrome.storage.local.get(['theme']);
+  return { theme: theme || 'dark' };
 }
 
 function getStateLocal(){
